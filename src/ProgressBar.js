@@ -104,7 +104,7 @@ componentWillReceiveProps(nextProps){
 	
 	
 	
-	if(sign==="-"){ console.log("if")
+	if(sign==="-"){ 
 		this.setState({barwidth:  (this.state.barwidth-nxtval)});
 	}else{ 
 		this.setState({barwidth: (this.state.barwidth+nxtval) });
