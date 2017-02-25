@@ -12,14 +12,6 @@ constructor(props) {
    
   }
 
-componentDidMount(){
-	/*Api.getProgressData('get',function(res){
-
-		console.log("front=",res);
-	});*/
-
-}	
-
   handleClick(e) {
 
     e.preventDefault();
@@ -46,7 +38,7 @@ componentDidMount(){
 
   	var progress={"buttons":[31,23,-31,-46],"bars":[26,39,67,55],"limit":220};
   	
-  	//var barCount=progress.bars.length; 	// no of progress bars in drop down
+  
   	var j=0;
   	var self=this;
 
@@ -138,7 +130,10 @@ componentWillReceiveProps(nextProps){
 		
 		return (
 				<div key={this.props.bar} className="bar">
-					<span key={this.props.bar}  className="barcolor" style={{width:barwidth,background:bgcolor}}>{percent.toFixed(0)}%</span>
+					<span className="percent-posn">{percent.toFixed(0)}%</span>
+					<span key={this.props.bar}  className="barcolor" style={{width:barwidth,background:bgcolor}}>
+					
+					</span>
 				</div>
 		);
 	}

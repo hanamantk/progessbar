@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ProgressBar from './ProgressBar.js';
-import './App.css';
+
 
 class App extends Component {
   render() {
