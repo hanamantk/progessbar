@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background: black;
 }
 
 #progress-bar{
@@ -32,7 +33,7 @@ h1{
 .barcolor{
 	display: block;
 	height: 30px;
-	background: #659cef;
+	--background: #659cef;
 	text-align: center;
 	position: relative;
 	z-index:5; 

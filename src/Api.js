@@ -1,29 +1,23 @@
-/*
+import $ from "jquery";
 
 var Api= {
-
-  BaseUrl: 'http://pb-api.herokuapp.com/bars',
 
   get: function(data,cb) {
     var self = this;
     $.ajax({
       type: 'GET',
       cache:false,
-      url: self.BaseUrl ,
+      async:false,
+      url: "http://pb-api.herokuapp.com/bars" ,
       
       success: function(res) {
          cb(res);
          
         }
     });
-  },
-  
-
-  getProgressData: function(data,cb){
-        this.get(data,cb);
-  },
+  }
 
   
 }
 
-export default Api;*/
+export default Api;

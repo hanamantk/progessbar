@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-//import Api from './Api.js';
+import Api from './Api.js';
+import $ from "jquery";
+window.$ = $;
 
 class ProgressBar extends Component {
 
@@ -8,38 +10,101 @@ constructor(props) {
     
     this.handleClick = this.handleClick.bind(this)
     this.dropDownChange= this.dropDownChange.bind(this)
-    this.state={ barwidth:0,drop:1};
+    this.printwidth=0;
    
+  }
+
+
+  componentWillMount(){
+  	var self=this;
+  	Api.get('',function(data){
+  			
+  		self.progress=data;
+  		
+  		self.totalBars=self.progress.bars.length;
+
+  		self.obj={};
+	
+		for(var i=1;i<=self.totalBars;i++){
+		
+			self.obj["bar"+i]=0;
+
+		}
+  	});
+  	
+		
   }
 
   handleClick(e) {
 
     e.preventDefault();
     var btnValue=e.target.value;
-    var val=parseInt(btnValue);
+    var btnvalue=parseInt(btnValue,10);
+   this.barNo=(this.barNo===undefined)?1:this.barNo;
 
-    
 
-    this.setState({
+   this.barwidth =btnvalue;
+  
+	if(this.barwidth<0){ 
 
-    	barwidth :val
-    });
+		this.printwidth=this.printwidth+(this.barwidth); //label is nagative
+		if (this.printwidth<0) {this.printwidth=0;}
+		
+	}else{ 
+		this.printwidth=this.printwidth+this.barwidth;
+	}
+ 
+ 	
+	var	percent     =(100/230)*(this.barwidth);
+	var barno       ='bar'+this.barNo;
+		
+
+
+	this.obj[barno] = this.obj[barno]+percent;
+	 var printValue =this.obj[barno].toFixed(0);
+	   if(printValue<0){
+
+	    	printValue  =0;
+	    	  
+	    }
+	    var printVal  = printValue+'%';
+	   
+	 
+	var bgcolor=(this.printwidth>230 && printValue>100)?'red':'';
+
+	if(bgcolor==='red'){
+
+		$('#bar'+this.barNo).css({ "background-color": "red",
+									"width":'100%'
+								
+								});
+		$('#percent'+this.barNo).html(printVal);
+
+
+	}else{		
+
+		$('#bar'+this.barNo).css({ "background-color":"green",
+
+								"width" :printVal
+							});
+		$('#percent'+this.barNo).html(printVal);
+		}
+
 
   }
 
   dropDownChange(e){
   	e.preventDefault();
   	
-  	//this.setState({drop:e.target.id})
+  	this.barNo=parseInt(e.target.value.charAt(9),10);
+	this.printwidth=0;
+		
+
   }
 
 
-  render() {
+  render() {  
 
-  	var progress={"buttons":[31,23,-31,-46],"bars":[26,39,67,55],"limit":220};
-  	
-  
-  	var j=0;
   	var self=this;
 
     return (
@@ -47,9 +112,9 @@ constructor(props) {
     <div id='progress-bar'>
 			<h1>Progress Bars Demo</h1>
 			{
-			progress.bars.map(function(bar){
-
-					return <Bars bar={bar} barwidth={self.state.barwidth}/>
+			self.progress.bars.map(function(bar,index){
+					
+					return <Bars baNno={index+1} />
 			})
 
 			}
@@ -59,9 +124,9 @@ constructor(props) {
 					<select className="drop" onChange={this.dropDownChange}>
 					
 					{
-						progress.bars.map(function(bar){
-									j=j+1;
-								return <DropDown barCount={j} />
+						self.progress.bars.map(function(bar,idx){
+									
+								return <DropDown barCount={idx+1} />
 						})
 
 						}
@@ -72,7 +137,7 @@ constructor(props) {
 					<div className="bars">
 					<div className="btns">
 						{
-						progress.buttons.map(function(btn){
+						self.progress.buttons.map(function(btn){
 									
 								return <Buttons btn={btn} handleClick={self.handleClick}/>		
 						})
@@ -90,48 +155,13 @@ constructor(props) {
 
 class Bars extends React.Component{
 
-constructor(props) {
-    super(props)
-   
-   this.state={ barwidth:this.props.barwidth };
-  }
-
-componentWillReceiveProps(nextProps){
-	var val=nextProps.barwidth;
-
-	var sign=val[0];
-	var nxtval =parseInt(val);
-	
-	
-	
-	if(sign==="-"){ 
-		this.setState({barwidth:  (this.state.barwidth-nxtval)});
-	}else{ 
-		this.setState({barwidth: (this.state.barwidth+nxtval) });
-	}
- 
-
-}
 
 	render(){ 
-		var barwidth;
-		var bgcolor='';
-		
-		var	percent=(100/230)*(this.state.barwidth);
-			barwidth=percent+'%';
-			var bgcolor=(this.state.barwidth>230)?'red':'';
-
-			if(bgcolor==='red'){
-
-				barwidth='100%';
-				bgcolor='red';
-
-			}
 		
 		return (
 				<div key={this.props.bar} className="bar">
-					<span className="percent-posn">{percent.toFixed(0)}%</span>
-					<span key={this.props.bar}  className="barcolor" style={{width:barwidth,background:bgcolor}}>
+					<span id={"percent"+this.props.baNno} className="percent-posn">0%</span>
+					<span key={this.props.barNo} id={"bar"+this.props.baNno} className="barcolor" >
 					
 					</span>
 				</div>
@@ -153,12 +183,6 @@ class DropDown extends React.Component{
 
 
 class Buttons extends React.Component{
-
-constructor(props){
-	super(props);
-	
-}
-	
 
 	render(){
 		return (
